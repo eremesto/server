@@ -1,28 +1,34 @@
+require('dotenv').config(); // В САМОМ ВЕРХУ
+
 const express = require("express");
 const mongoose = require("mongoose");
-const User = require("./models/User");
-const Services = require("./models/AutoService");
 
-const PORT = process.env.PORT || 3000;
+// Импорты роутеров
 const userRouter = require("./User/userRouter");
 const serviceRouter = require("./AutoService/autoServiceRouter");
 const chatRouter = require("./Chat/chatRouter");
-const verificationRouter = require('./routes/verificationRouter'); 
-app.use('/verification', verificationRouter);
+const verificationRouter = require("./routes/verificationRouter");
+
+const PORT = process.env.PORT || 3000;
+
+// СОЗДАЁМ app ДО ТОГО, КАК ИСПОЛЬЗУЕМ
 const app = express();
+
 app.use(express.json());
 
-// Лог всех входящих запросов — временно для отладки
+// Лог всех входящих запросов
 app.use((req, res, next) => {
   console.log(`>>> ${req.method} ${req.url}`, JSON.stringify(req.body));
   next();
 });
 
+// ПОДКЛЮЧАЕМ РОУТЕРЫ (теперь app уже существует)
 app.use("/user", userRouter);
 app.use("/service", serviceRouter);
-app.use("/chat", chatRouter);   
+app.use("/chat", chatRouter);
+app.use("/verification", verificationRouter);
 
-// 404 возвращает JSON
+// 404 и обработка ошибок
 app.use((req, res, next) => {
   res.status(404).json({ message: `Not Found: ${req.method} ${req.url}` });
 });
@@ -32,10 +38,11 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Something broke!" });
 });
 
+// Подключение к MongoDB
 const connectDB = async () => {
   try {
     const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/StoHelperBackendRemastered";
-await mongoose.connect(MONGO_URI, { writeConcern: { w: 1 } });
+    await mongoose.connect(MONGO_URI, { writeConcern: { w: 1 } });
     console.log("MongoDB connected");
   } catch (error) {
     console.error("MongoDB connection error:", error.message);
