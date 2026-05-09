@@ -41,7 +41,11 @@ app.use((err, req, res, next) => {
 // Подключение к MongoDB
 const connectDB = async () => {
   try {
-    const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://<db_username>:<BHHaD853LCvGYjXA>@cluster0.vlcj51k.mongodb.net/?appName=Cluster0";
+    const MONGO_URI = process.env.MONGO_URI;
+if (!MONGO_URI) {
+  console.error("MONGO_URI environment variable is not set");
+  process.exit(1);
+}
     await mongoose.connect(MONGO_URI, { writeConcern: { w: 1 } });
     console.log("MongoDB connected");
   } catch (error) {
