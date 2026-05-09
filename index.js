@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
 // Подключение к MongoDB
 const connectDB = async () => {
   try {
-    const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/StoHelperBackendRemastered";
+    const MONGO_URI = process.env.MONGO_URI || "mongodb+srv://<db_username>:<BHHaD853LCvGYjXA>@cluster0.vlcj51k.mongodb.net/?appName=Cluster0";
     await mongoose.connect(MONGO_URI, { writeConcern: { w: 1 } });
     console.log("MongoDB connected");
   } catch (error) {
