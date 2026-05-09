@@ -1,5 +1,3 @@
-require('dotenv').config(); // ДОБАВИТЬ В САМОМ ВЕРХУ
-
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("./models/User");
@@ -9,11 +7,12 @@ const PORT = process.env.PORT || 3000;
 const userRouter = require("./User/userRouter");
 const serviceRouter = require("./AutoService/autoServiceRouter");
 const chatRouter = require("./Chat/chatRouter");
-const verificationRouter = require("./routes/verificationRouter"); // НОВЫЙ ИМПОРТ
-
+const verificationRouter = require('./routes/verificationRouter'); 
+app.use('/verification', verificationRouter);
 const app = express();
 app.use(express.json());
 
+// Лог всех входящих запросов — временно для отладки
 app.use((req, res, next) => {
   console.log(`>>> ${req.method} ${req.url}`, JSON.stringify(req.body));
   next();
@@ -21,9 +20,9 @@ app.use((req, res, next) => {
 
 app.use("/user", userRouter);
 app.use("/service", serviceRouter);
-app.use("/chat", chatRouter);
-app.use("/verification", verificationRouter); // НОВЫЙ МАРШРУТ
+app.use("/chat", chatRouter);   
 
+// 404 возвращает JSON
 app.use((req, res, next) => {
   res.status(404).json({ message: `Not Found: ${req.method} ${req.url}` });
 });
@@ -35,9 +34,8 @@ app.use((err, req, res, next) => {
 
 const connectDB = async () => {
   try {
-    await mongoose.connect("mongodb://localhost:27017/StoHelperBackendRemastered", {
-      writeConcern: { w: 1 }
-    });
+    const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/StoHelperBackendRemastered";
+await mongoose.connect(MONGO_URI, { writeConcern: { w: 1 } });
     console.log("MongoDB connected");
   } catch (error) {
     console.error("MongoDB connection error:", error.message);
