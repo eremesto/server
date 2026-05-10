@@ -54,8 +54,8 @@ router.post('/send-code', async (req, res) => {
     console.log(`Код:   ${code}`);
     console.log('=======================================\n');
 
-    // Если хотите, можно оставить Resend для некоторых адресов, но для простоты закомментируйте:
-    // await sendVerificationEmail(email, code);
+    
+    await sendVerificationEmail(email, code);
 
     res.json({ message: 'Код отправлен на email' });
   } catch (err) {
