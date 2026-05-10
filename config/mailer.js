@@ -1,44 +1,35 @@
-const nodemailer = require('nodemailer');
-require('dotenv').config();
+const { Resend } = require('resend');
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendVerificationEmail(email, code) {
-  // Создаём новый транспорт для каждого письма
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
-    port: parseInt(process.env.SMTP_PORT),
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-    // Добавляем таймауты на всякий случай
-    connectionTimeout: 15000,
-    socketTimeout: 15000,
-  });
-
   try {
-    const info = await transporter.sendMail({
-      from: `"STO Helper" <${process.env.EMAIL_USER}>`,
+    const { data, error } = await resend.emails.send({
+      from: 'onboarding@resend.dev',  
       to: email,
       subject: 'Код подтверждения для STO Helper',
-      text: `Ваш код подтверждения: ${code}\nКод действителен 5 минут.`,
-      html: `<div style="font-family: Arial, sans-serif; max-width: 500px;">
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 500px;">
           <h2>STO Helper</h2>
           <p>Ваш код подтверждения:</p>
           <h1 style="background: #f4f4f4; padding: 10px; text-align: center;">${code}</h1>
           <p>Код действителен <strong>5 минут</strong>.</p>
           <hr />
           <small>Если вы не запрашивали код, просто проигнорируйте это письмо.</small>
-        </div>`,
+        </div>
+      `,
     });
-    console.log('Email sent: %s', info.messageId);
-    return info;
-  } catch (error) {
-    console.error('Ошибка отправки email:', error);
-    throw error;
-  } finally {
-    // Закрываем соединение, чтобы не висеть
-    transporter.close();
+
+    if (error) {
+      console.error('Resend error:', error);
+      throw new Error(error.message);
+    }
+
+    console.log(`Email sent to ${email}, id: ${data.id}`);
+    return data;
+  } catch (err) {
+    console.error('Failed to send email:', err);
+    throw err;
   }
 }
 
