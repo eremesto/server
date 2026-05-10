@@ -1,17 +1,14 @@
 const { Resend } = require('resend');
 
-// Сопоставляем email-адреса с соответствующими API-ключами
 const emailToApiKey = {
   'solvenbause@gmail.com': process.env.RESEND_API_KEY_1,
-  'solvenbause+service@gmail.com': process.env.RESEND_API_KEY_2,
+  'noreply.stohelper@gmail.com': process.env.RESEND_API_KEY_2,
 };
 
 async function sendVerificationEmail(email, code) {
-  // По умолчанию считаем, что письмо отправлять не будем (будет fallback)
   let sent = false;
   let errorMessage = null;
-
-  // Проверяем, есть ли специальный ключ для этого email
+  
   const apiKey = emailToApiKey[email];
   if (apiKey) {
     const resend = new Resend(apiKey);
