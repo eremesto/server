@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 const VerificationCode = require('../models/VerificationCode');
 const User = require('../models/User');
 const AutoService = require('../models/AutoService');
-const { sendVerificationEmail } = require('../config/mailer'); // <- правильный путь
+const { sendVerificationEmail } = require('../config/mailer'); 
 const { secret } = require('../config');
 
 // Функция генерации 6-значного кода
@@ -44,16 +44,22 @@ router.post('/send-code', async (req, res) => {
     // Удаляем старые коды
     await VerificationCode.deleteMany({ email });
 
-    // Генерируем и сохраняем новый код
+    // Генерируем случайный код
     const code = generateCode();
     await VerificationCode.create({ email, code });
 
-    // Отправляем письмо
-    await sendVerificationEmail(email, code);
+    // ✅ ВРЕМЕННО: печатаем код в консоль вместо отправки email
+    console.log('\n========== КОД ПОДТВЕРЖДЕНИЯ ==========');
+    console.log(`Email: ${email}`);
+    console.log(`Код:   ${code}`);
+    console.log('=======================================\n');
+
+    // Если хотите, можно оставить Resend для некоторых адресов, но для простоты закомментируйте:
+    // await sendVerificationEmail(email, code);
 
     res.json({ message: 'Код отправлен на email' });
   } catch (err) {
-    console.error('Ошибка в /send-code:', err);
+    console.error(err);
     res.status(500).json({ message: 'Ошибка при отправке кода' });
   }
 });
