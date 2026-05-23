@@ -11,6 +11,7 @@ const autoServiceSchema = new mongoose.Schema({
   city: { type: String, required: true },
   address: { type: String, required: true },
   services: [{ type: String }],
+  servicePrices: { type: Object, default: {} },
   reviews: [
     {
       review: String,

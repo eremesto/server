@@ -46,6 +46,7 @@ class authController {
       city,
       address,
       services: services || [],
+      servicePrices: {},
       reviews: [],
       declaration: [],
     });
@@ -140,10 +141,14 @@ class authController {
 
   async updateProfile(req, res) {
     try {
-      const { id, city, telephoneNumber, webAddress, address, startOfWork, endOfWork, services } = req.body;
+      const { id, city, telephoneNumber, webAddress, address, startOfWork, endOfWork, services, servicePrices } = req.body;
+      const updateData = { city, telephoneNumber, webAddress, address, startOfWork, endOfWork, services };
+      if (servicePrices && typeof servicePrices === "object") {
+        updateData.servicePrices = servicePrices;
+      }
       const updatedService = await AutoService.findByIdAndUpdate(
         id,
-        { city, telephoneNumber, webAddress, address, startOfWork, endOfWork, services },
+        updateData,
         { new: true }
       );
       if (!updatedService) return res.status(404).json({ message: "Сервис не найден" });
