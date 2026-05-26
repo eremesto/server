@@ -31,25 +31,23 @@ async function sendVerificationEmail(email, code) {
         console.error(`Resend error for ${email}:`, error);
       } else {
         sent = true;
-        console.log(`✅ Email sent to ${email}, id: ${data.id}`);
+        console.log(`Email sent to ${email}, id: ${data.id}`);
       }
     } catch (err) {
       errorMessage = err.message;
       console.error(`Exception sending to ${email}:`, err);
     }
   } else {
-    console.log(`ℹ️ No dedicated API key for ${email}, skipping real email.`);
+    console.log(`No dedicated API key for ${email}, skipping real email.`);
   }
 
-  // ВСЕГДА выводим код в консоль (для отладки и fallback)
   console.log('\n========== КОД ПОДТВЕРЖДЕНИЯ ==========');
-  console.log(`📧 Email: ${email}`);
-  console.log(`🔢 Код:   ${code}`);
-  console.log(`📬 Реальное письмо: ${sent ? '✅ отправлено' : '❌ не отправлено (код только в логах)'}`);
-  if (errorMessage) console.log(`❗ Причина: ${errorMessage}`);
+  console.log(`Email: ${email}`);
+  console.log(`Код:   ${code}`);
+  console.log(`Реальное письмо: ${sent ? 'отправлено' : 'не отправлено (код только в логах)'}`);
+  if (errorMessage) console.log(` Причина: ${errorMessage}`);
   console.log('=======================================\n');
 
-  // Не выбрасываем ошибку, чтобы регистрация продолжалась даже при проблемах с почтой
   return { sent, code };
 }
 

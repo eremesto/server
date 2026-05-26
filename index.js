@@ -9,7 +9,7 @@ const serviceRouter = require("./AutoService/autoServiceRouter");
 const chatRouter = require("./Chat/chatRouter");
 const verificationRouter = require("./routes/verificationRouter");
 
-const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/StoHelperBackendRemastered";
 
 // СОЗДАЁМ app ДО ТОГО, КАК ИСПОЛЬЗУЕМ
 const app = express();
@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
 // Подключение к MongoDB
 const connectDB = async () => {
   try {
-    const MONGO_URI = process.env.MONGO_URI;
+    const MONGO_URI = process.env.MONGO_URI || "mongodb://localhost:27017/StoHelperBackendRemastered";
 if (!MONGO_URI) {
   console.error("MONGO_URI environment variable is not set");
   process.exit(1);

@@ -10,7 +10,6 @@ const generateAccessToken = (id) => {
 };
 
 class authController {
-  // ========== ИЗМЕНЁННЫЙ МЕТОД РЕГИСТРАЦИИ ==========
   async registration(req, res) {
   try {
     const { tempToken, password, nameService, webAddress, startOfWork, endOfWork, telephoneNumber, city, address, services } = req.body;
@@ -27,7 +26,6 @@ class authController {
     }
     const email = payload.email;
 
-    // Проверка уникальности
     const existingService = await AutoService.findOne({ login: email });
     const existingUser = await User.findOne({ login: email });
     if (existingService || existingUser) {
@@ -36,7 +34,7 @@ class authController {
 
     const hashPassword = bcrypt.hashSync(password, 7);
     const newService = new AutoService({
-      login: email,                             // <-- ЭТА СТРОКА БЫЛА ПРОПУЩЕНА
+      login: email,                            
       password: hashPassword,
       nameService,
       webAddress,
@@ -60,7 +58,6 @@ class authController {
   }
 }
 
-  // ========== ОСТАЛЬНЫЕ МЕТОДЫ (БЕЗ ИЗМЕНЕНИЙ, КРОМЕ login) ==========
   async login(req, res) {
     try {
       const { login, password } = req.body;
@@ -93,7 +90,6 @@ class authController {
 
   async getReviews(req, res) {
     try {
-      // ВАЖНО: в оригинале была ошибка – используется Service, надо AutoService
       const { nameService } = req.body;
       const services = await AutoService.find({ nameService });
       const reviewsArray = services.flatMap((service) => service.reviews);
@@ -127,7 +123,7 @@ class authController {
       const { nameService, login } = req.body;
       const existingService = await AutoService.findOne({ nameService });
       if (existingService) {
-        const applications = existingService.declaration; // исправлено: declaration, а не application
+        const applications = existingService.declaration; 
         const isSent = applications.some(app => app.login === login);
         res.status(200).json(isSent);
       } else {
@@ -165,7 +161,6 @@ class authController {
     const service = await AutoService.findById(serviceId);
     if (!service) return res.status(404).json({ message: "Сервис не найден" });
 
-    // Получаем данные пользователя (для личной информации)
     const user = await User.findOne({ login });
     const personalInfo = {
       displayName: user?.displayName || login,
@@ -180,7 +175,6 @@ class authController {
       vinNumber: user?.vinNumber || "",
     };
 
-    // Проверка рабочих часов (уже есть)
     const startHour = parseInt(service.startOfWork.split(":")[0]);
     const startMin = parseInt(service.startOfWork.split(":")[1]);
     const endHour = parseInt(service.endOfWork.split(":")[0]);
@@ -198,13 +192,12 @@ class authController {
     const [dd, mm, yyyy] = date.split(".");
     const parsedDate = new Date(`${yyyy}-${mm}-${dd}T00:00:00.000Z`);
     
-    // Сохраняем в declaration вместе с личной информацией
     service.declaration.push({ 
       login, 
       listAssistances, 
       date: parsedDate, 
       time, 
-      carInfo: { ...personalInfo, ...carInfo } // объединяем
+      carInfo: { ...personalInfo, ...carInfo }
     });
     await service.save();
     const decl = service.declaration[service.declaration.length - 1];

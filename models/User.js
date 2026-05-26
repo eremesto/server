@@ -3,10 +3,10 @@
 const User = new Schema({
   login: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-  displayName: { type: String, default: "" },        // ← новое поле (имя)
-  bio: { type: String, default: "" },               // ← новое поле (о себе)
-  city: { type: String, default: "" },              // ← новое поле (город)
-  birthDate: { type: String, default: "" },         // ← новое поле (дата рождения)
+  displayName: { type: String, default: "" },        
+  bio: { type: String, default: "" },              
+  city: { type: String, default: "" },              
+  birthDate: { type: String, default: "" },        
   phone: { type: String, default: "" },
   carBrand: { type: String, default: "" },
   carModel: { type: String, default: "" },
@@ -30,7 +30,7 @@ const User = new Schema({
         carYear: { type: String, default: "" },
         carNumber: { type: String, default: "" },
         vinNumber: { type: String, default: "" },
-        displayName: { type: String, default: "" },  // ← новое поле в carInfo
+        displayName: { type: String, default: "" }, 
         bio: { type: String, default: "" },
         city: { type: String, default: "" },
         birthDate: { type: String, default: "" },

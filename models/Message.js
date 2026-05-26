@@ -5,7 +5,7 @@ const MessageSchema = new mongoose.Schema({
   senderLogin: { type: String, required: true },
   senderType: { type: String, enum: ["user", "service"], required: true },
   text: { type: String, required: true },
-  readBy: [{ type: String }], // логины тех, кто прочитал
+  readBy: [{ type: String }],
   createdAt: { type: Date, default: Date.now },
 });
 

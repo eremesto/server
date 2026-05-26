@@ -6,11 +6,6 @@ const { check } = require("express-validator");
 router.post(
   "/registrationAutoService",
   [
-    // ❌ Убрать эти строки
-    // check("login", "Логин пользователя не может быть пустым").notEmpty(),
-    // check("password", "Пароль пользователя не может быть пустым").notEmpty(),
-    
-    // ✅ Добавить проверку на tempToken (опционально)
     check("tempToken", "Требуется подтверждение email").notEmpty(),
     check("password", "Пароль не может быть пустым").notEmpty(),
   ],
